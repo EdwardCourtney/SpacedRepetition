@@ -1,33 +1,30 @@
 package com.morrello.spacedrepetition;
 
+import com.morrello.spacedrepetition.controller.FrameController;
+import com.morrello.spacedrepetition.database.Database;
 import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.image.Image;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class App extends Application {
     @Override
-    public void start(Stage stage) {
-        Label title = new Label("Spaced Repetition");
-        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+    public void start(Stage stage) throws IOException {
+        Database.initialize();
 
-        Label status = new Label("JavaFX is ready.");
-
-        Button button = new Button("Start");
-        button.setOnAction(event -> status.setText("Ready to build your app."));
-
-        VBox root = new VBox(16, title, status, button);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(24));
-
-        Scene scene = new Scene(root, 640, 420);
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("/Frame.fxml"));
+        Parent root = loader.load();
+        FrameController controller = loader.getController();
 
         stage.setTitle("Spaced Repetition");
-        stage.setScene(scene);
+        stage.getIcons().add(new Image(App.class.getResourceAsStream("/Icon.png")));
+        stage.setScene(new Scene(root));
+        stage.setOnCloseRequest(event -> controller.saveNote());
+        stage.setMaximized(true);
         stage.show();
     }
 
